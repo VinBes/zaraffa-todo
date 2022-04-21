@@ -18,6 +18,7 @@ class AuthRouter {
   }
 
   async login(req, res) {
+    console.log(`Logging in`);
     console.log(req.body);
     let { username, email, password } = req.body;
     let user = await this.knex
@@ -25,6 +26,7 @@ class AuthRouter {
       .from("users")
       .where({ email: email })
       .then((data) => data[0]);
+    console.log(user);
     if (await bcrypt.compare(password, user.password)) {
       let payload = {
         id: user.id,
@@ -37,8 +39,8 @@ class AuthRouter {
 
   async signup(req, res) {
     console.log(req.body);
-
     let { username, email, password } = req.body;
+    console.log(password);
     let hashed = await bcrypt.hash(password, 10);
     let userInfo = {
       username,

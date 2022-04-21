@@ -16,6 +16,7 @@ exports.up = function (knex) {
           table.increments("content_id").primary();
           table.string("content").notNullable();
           table.string("moment").notNullable();
+          table.boolean("done").notNullable();
           table.integer("user_id").unsigned();
           table.foreign("user_id").references("users.id");
         })

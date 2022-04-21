@@ -33,28 +33,32 @@ class TodoService {
     console.log(todo.tags);
     console.log(user);
     try {
-      let todos = await this.knex
-        .select("*")
-        .from("todos")
-        .where({ user_id: user.id });
-      let contentId = await this.knex
-        .returning("content_id")
+      let newTodo = await this.knex
+        .returning("*")
         .insert({
           user_id: user.id,
           content: todo.content,
           moment: todo.moment,
+          done: todo.done,
         })
         .into("todos");
-      console.log(contentId, "contentId");
+      console.log(newTodo[0].content_id, "contentId");
       for (let index = 0; index < todo.tags.length; index++) {
         await this.knex
           .insert({
             tag_name: todo.tags[index].name,
-            content_id: contentId[0].content_id,
+            content_id: newTodo[0].content_id,
           })
           .into("tags");
       }
+      let newTags = await this.knex
+        .select("*")
+        .from("tags")
+        .where({ content_id: newTodo[0].content_id });
+      newTodo[0].tags = newTags;
       console.log(`a todo has been added`);
+      console.log(newTodo[0]);
+      return newTodo[0];
     } catch (error) {
       console.log(error, "unable to add todo to database");
     }
@@ -67,6 +71,7 @@ class TodoService {
           content_id: id,
           content: todo.content,
           moment: todo.moment,
+          done: todo.done,
           user_id: user.id,
         })
         .where({ id: id })
