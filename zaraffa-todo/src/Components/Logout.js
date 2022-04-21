@@ -5,9 +5,5 @@ import { useDispatch } from "react-redux";
 export default function LogoutButton() {
   let dispatch = useDispatch();
 
-  return (
-    <>
-      <button onClick={() => dispatch(logoutThunk())}>Logout</button>
-    </>
-  );
+  return <button onClick={() => dispatch(logoutThunk())}>Logout</button>;
 }

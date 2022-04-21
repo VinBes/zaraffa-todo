@@ -1,5 +1,7 @@
+import logo from "./Assets/Images/zaraffalogotransparantBig.png";
+
 import AddNewTodo from "./Components/Addnewtodo";
-import TodaySwitch from "./Components/TodaySwitch";
+import TodaySwitchComp from "./Components/TodaySwitchComp";
 import Todolist from "./Components/Todolist";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
@@ -7,7 +9,7 @@ import LogoutButton from "./Components/Logout";
 
 import { Routes, BrowserRouter, Link, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Container, Navbar, NavItem } from "react-bootstrap";
+import { Container, Row, Col, Navbar, NavItem } from "react-bootstrap";
 
 function RequireAuth({ children }) {
   let isAuthenticated = useSelector((state) => state.authStore.auth);
@@ -16,47 +18,55 @@ function RequireAuth({ children }) {
 
 function App() {
   let isAuthenticated = useSelector((state) => state.authStore.auth);
+  const today = useSelector((state) => state.todoStore.today);
+  const todosFromRedux = useSelector((state) => state.todoStore.todos);
+
+  function todayFilter(today) {
+    return todosFromRedux.filter((todo) => {
+      if (today) {
+        return todo.today == true;
+      }
+      if (!today) {
+        return todo.today == false;
+      }
+    });
+  }
   return (
     <>
       <BrowserRouter>
-        <div>
-          <Navbar>
-            {isAuthenticated ? (
-              <Container>
-                <NavItem>
-                  <LogoutButton></LogoutButton>
-                </NavItem>
-              </Container>
-            ) : (
-              <Container>
-                <NavItem>
-                  <Link to="/">Signup</Link>
-                </NavItem>
-                <NavItem>
-                  <Link to="/login">Login</Link>
-                </NavItem>
-                <NavItem>
-                  <Link to="/todos">Todos</Link>
-                </NavItem>
-              </Container>
-            )}
-          </Navbar>
-
-          <Routes>
-            <Route path="/" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route
-              path="/todos"
-              element={
-                <RequireAuth Navigate="/login">
-                  <AddNewTodo></AddNewTodo>
-                  <TodaySwitch />
-                  <Todolist></Todolist>
-                </RequireAuth>
-              }
-            ></Route>
-          </Routes>
-        </div>
+        <Container className="mainContainer">
+          <Row className="d-flex flex-row justify-content-center">
+            <Col lg={5}>
+              <Routes>
+                <Route path="/" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/todos"
+                  element={
+                    <RequireAuth Navigate="/login">
+                      <AddNewTodo></AddNewTodo>
+                      <TodaySwitchComp />
+                      <Todolist list={todayFilter(today)}></Todolist>
+                    </RequireAuth>
+                  }
+                ></Route>
+              </Routes>
+            </Col>
+          </Row>
+          <Row className="d-flex text-center copyright">
+            <Col>
+              <p className="zaraffa copyright">
+                Made by Vincent Besuyen &copy;{" "}
+                <span>
+                  <img className="zaraffa" src={logo}></img>
+                </span>
+              </p>
+            </Col>
+          </Row>
+          <Row className="d-flex text-center copyright">
+            <Col>{isAuthenticated ? <LogoutButton></LogoutButton> : null}</Col>
+          </Row>
+        </Container>
       </BrowserRouter>
     </>
   );

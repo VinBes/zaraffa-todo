@@ -20,7 +20,7 @@
   right: 0;
   bottom: 0;
 
-  background-color: darkgray;
+  background-color: rgba(12, 2, 10, 0.8);
   transition: 0.4s;
 }
 
@@ -37,7 +37,7 @@
 }
 
 input:checked + .todaySlider {
-  background-color: cornflowerblue;
+  background-color: rgba(112, 33, 96, 0.3);
 }
 
 input:checked + .todaySlider::before {

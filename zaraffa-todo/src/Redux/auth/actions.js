@@ -3,6 +3,13 @@ import axios from "axios";
 export const LOGIN_USER = "LOGIN_USER";
 export const LOGOUT_USER = "LOGOUT_USER";
 
+export function loginUser(username) {
+  return {
+    type: LOGIN_USER,
+    payload: username,
+  };
+}
+
 export const signupUserThunk = (username, email, password) => {
   return (dispatch) => {
     axios
@@ -18,21 +25,21 @@ export const signupUserThunk = (username, email, password) => {
   };
 };
 
-export const loginUserThunk = (username, email, password) => {
+export const loginUserThunk = (email, password) => {
   return (dispatch) => {
     axios
       .post(`${process.env.REACT_APP_API_SERVER}/auth/login`, {
-        username,
         email,
         password,
       })
       .then((response) => {
+        console.log(`inside login thunk`);
         console.log(response.data);
         if (response.data === null) {
           console.log(`login failed`);
         } else {
-          localStorage.setItem("TodoLoginToken", response.data.token);
-          dispatch({ type: LOGIN_USER });
+          localStorage.setItem("TodoLoginToken", response.data.userInfo.token);
+          dispatch(loginUser(response.data.userInfo.user.username));
         }
       });
   };

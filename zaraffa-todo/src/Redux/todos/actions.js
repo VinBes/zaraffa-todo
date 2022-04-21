@@ -5,6 +5,9 @@ export const ADD_TODO = "ADD_TODO";
 export const EDIT_TODO = "EDIT_TODO";
 export const DELETE_TODO = "DELETE_TODO";
 export const CLEAR_TODOS = "CLEAR_TODOS";
+export const TODAY_SWITCH = "TODAY_SWITCH";
+export const DONE = "DONE";
+export const GET_INFO = "GET_INFO";
 
 export function GetTodos(todos) {
   return {
@@ -40,11 +43,25 @@ export function ClearTodos() {
   };
 }
 
+export function TodaySwitch(today) {
+  return {
+    type: TODAY_SWITCH,
+    payload: today,
+  };
+}
+
+export function doneTodo(done) {
+  return {
+    type: DONE,
+    payload: done,
+  };
+}
+
 //Thunk actions to interact with backend
 export function GetTodosThunk() {
   return (dispatch) => {
     let token = localStorage.getItem("TodoLoginToken");
-    axios
+    return axios
       .get(`${process.env.REACT_APP_API_SERVER}/api/todos`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -52,12 +69,14 @@ export function GetTodosThunk() {
       })
       .then((response) => {
         console.log(response.data);
-        dispatch(GetTodos(response.data));
+        return dispatch(GetTodos(response.data));
       });
   };
 }
 
 export function AddTodoThunk(todo) {
+  console.log(`inside thunk`);
+  console.log(todo);
   return (dispatch) => {
     let token = localStorage.getItem("TodoLoginToken");
     axios
@@ -65,7 +84,8 @@ export function AddTodoThunk(todo) {
         `${process.env.REACT_APP_API_SERVER}/api/todos`,
         {
           content: todo.content,
-          moment: todo.moment,
+          done: todo.done,
+          today: todo.today,
           tags: todo.tags,
         },
         {
@@ -82,6 +102,7 @@ export function AddTodoThunk(todo) {
 }
 
 export function EditTodoThunk(todo) {
+  console.log(todo);
   return (dispatch) => {
     let token = localStorage.getItem("TodoLoginToken");
     axios
@@ -90,8 +111,6 @@ export function EditTodoThunk(todo) {
         {
           id: todo.id,
           content: todo.content,
-          moment: todo.moment,
-          tags: todo.tags,
         },
         {
           headers: {
@@ -100,6 +119,7 @@ export function EditTodoThunk(todo) {
         }
       )
       .then((response) => {
+        console.log(`response from backend`);
         console.log(response.data);
         dispatch(EditTodo(response.data));
       });
@@ -107,6 +127,8 @@ export function EditTodoThunk(todo) {
 }
 
 export function DeleteTodoThunk(id) {
+  console.log(`inside thunk`);
+  console.log(id);
   return (dispatch) => {
     let token = localStorage.getItem("TodoLoginToken");
     axios
@@ -134,6 +156,30 @@ export function ClearTodosThunk() {
       .then((response) => {
         console.log(response.data);
         dispatch(ClearTodos());
+      });
+  };
+}
+
+export function DoneThunk(done, id) {
+  return (dispatch) => {
+    let token = localStorage.getItem("TodoLoginToken");
+    axios
+      .put(
+        `${process.env.REACT_APP_API_SERVER}/api/todos/done/`,
+        {
+          done: done,
+          id: id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(`response from backend`);
+        console.log(response.data);
+        dispatch(doneTodo(response.data));
       });
   };
 }
