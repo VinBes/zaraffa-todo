@@ -20,7 +20,7 @@ class AuthRouter {
   async login(req, res) {
     console.log(`Logging in`);
     console.log(req.body);
-    let { username, email, password } = req.body;
+    let { email, password } = req.body;
     let user = await this.knex
       .select("*")
       .from("users")
@@ -32,8 +32,11 @@ class AuthRouter {
         id: user.id,
       };
       let token = jwt.sign(payload, config.jwtSecret);
-      console.log(token);
-      res.json({ token });
+      let userInfo = {
+        user: user,
+        token: token,
+      };
+      res.json({ userInfo });
     }
   }
 

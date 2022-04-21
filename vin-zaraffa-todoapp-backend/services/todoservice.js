@@ -38,7 +38,7 @@ class TodoService {
         .insert({
           user_id: user.id,
           content: todo.content,
-          moment: todo.moment,
+          today: todo.today,
           done: todo.done,
         })
         .into("todos");
@@ -64,26 +64,39 @@ class TodoService {
     }
   }
 
-  async edittodo(user, todo, id) {
+  async edittodo(todo, id) {
     try {
       let updated = await this.knex("todos")
         .update({
           content_id: id,
           content: todo.content,
-          moment: todo.moment,
-          done: todo.done,
-          user_id: user.id,
         })
-        .where({ id: id })
+        .where({ content_id: id })
         .returning("*");
-      let updatedTags = await this.knex("tags").update({});
       return updated;
     } catch (error) {
       console.log(error, "unable to edit todo");
     }
   }
 
+  async donetodo(done, id) {
+    console.log(`value of done entering db`);
+    console.log(done);
+    try {
+      let updated = await this.knex("todos")
+        .update({
+          done: done,
+        })
+        .where({ content_id: id })
+        .returning("*");
+      return updated;
+    } catch (error) {
+      console.log(error, "unable to set todo to done or viceversa");
+    }
+  }
+
   async deltodo(user, id) {
+    let deletedTags = await this.knex("tags").where({ content_id: id }).del();
     let deleted = await this.knex("todos")
       .where({ content_id: id })
       .andWhere({ user_id: user.id })

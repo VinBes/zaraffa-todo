@@ -9,10 +9,10 @@ export default function AddNewTodo(props) {
   const [done, setDone] = useState(false);
   const [tags, setTags] = useState([]);
   const dispatch = useDispatch();
-  const moment = useSelector((state) => state.todoStore.todos);
+  const today = useSelector((state) => state.todoStore.today);
 
   useEffect(() => {
-    if (content.length > 0) {
+    if (content.length >= 1) {
       setDisabled(false);
     } else {
       setDisabled(true);
@@ -22,8 +22,8 @@ export default function AddNewTodo(props) {
   function submitTodo() {
     const newTodo = {
       content: content,
-      moment: moment,
       done: done,
+      today: today,
       tags: tags,
     };
     content.length > 0 && dispatch(AddTodoThunk(newTodo));
@@ -69,18 +69,15 @@ export default function AddNewTodo(props) {
           </Col>
         </Row>
         <div>
-          {props.tags && props.tags.length > 0
-            ? props.tags.map((tag, i) => {
-                <>
-                  <input
-                    key={i}
-                    className="tagInput"
-                    type="text"
-                    value={tag.name}
-                    onChange={(e) => onTagChange(i, e)}
-                  ></input>
-                </>;
-              })
+          {tags && tags.length > 0
+            ? tags.map((tag, i) => (
+                <input
+                  key={i}
+                  type="text"
+                  defaultValue={tag.name}
+                  onChange={(e) => onTagChange(i, e)}
+                ></input>
+              ))
             : "No tags"}
           <button
             className="tagButton"
