@@ -21,6 +21,11 @@ class TodoRouter {
       this.auth.authenticate(),
       this.deltodo.bind(this)
     );
+    router.delete(
+      "/todos",
+      this.auth.authenticate(),
+      this.cleartodos.bind(this)
+    );
     return router;
   }
 
@@ -68,6 +73,10 @@ class TodoRouter {
     let user = req.user[0];
     let id = req.params.id;
     return this.todoService.deltodo(user, id).then(() => res.send(id));
+  }
+
+  cleartodos(req, res) {
+    return this.todoService.cleartodos().then(() => res.send());
   }
 }
 

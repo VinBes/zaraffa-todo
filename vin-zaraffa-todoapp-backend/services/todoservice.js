@@ -103,5 +103,11 @@ class TodoService {
       .del();
     return deleted;
   }
+
+  async cleartodos() {
+    await this.knex.select("*").from("tags").del();
+    let todos = await this.knex.select("*").from("todos").del();
+    return todos;
+  }
 }
 module.exports = TodoService;

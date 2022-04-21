@@ -153,8 +153,7 @@ export function ClearTodosThunk() {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((response) => {
-        console.log(response.data);
+      .then(() => {
         dispatch(ClearTodos());
       });
   };

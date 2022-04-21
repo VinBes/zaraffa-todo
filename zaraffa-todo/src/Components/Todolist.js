@@ -49,17 +49,6 @@ export default function Todolist(props) {
     dispatch(DoneThunk(done, id));
   };
 
-  // function todayFilter(today) {
-  //   return todosFromRedux.filter((todo) => {
-  //     if (today) {
-  //       return todo.today == true;
-  //     }
-  //     if (!today) {
-  //       return todo.today == false;
-  //     }
-  //   });
-  // }
-
   //Future function will be to use a modal to edit the tags, the underneath code is used to capture the change in the input fields
   // function onTagChange(i, e, oldTags) {
   //   console.log(`index`, i);

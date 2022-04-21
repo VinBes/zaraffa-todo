@@ -6,6 +6,7 @@ import Todolist from "./Components/Todolist";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import LogoutButton from "./Components/Logout";
+import ClearButton from "./Components/ClearButton";
 
 import { Routes, BrowserRouter, Link, Route, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -63,8 +64,11 @@ function App() {
               </p>
             </Col>
           </Row>
-          <Row className="d-flex text-center copyright">
-            <Col>{isAuthenticated ? <LogoutButton></LogoutButton> : null}</Col>
+          <Row className="d-flex justify-content-evenly copyright text-center">
+            <Col>
+              {isAuthenticated ? <LogoutButton></LogoutButton> : null}
+              <ClearButton className="ms-2">Clear all</ClearButton>
+            </Col>
           </Row>
         </Container>
       </BrowserRouter>
