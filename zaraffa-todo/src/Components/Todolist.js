@@ -32,7 +32,7 @@ export default function Todolist(props) {
 
   useEffect(() => {
     dispatch(GetTodosThunk());
-  }, []);
+  }, [done]);
 
   const editTodoContent = (id) => {
     updatedContent.length > 0 &&

@@ -8,7 +8,9 @@ exports.up = function (knex) {
       table.increments("id").primary();
       table.string("username").notNullable();
       table.string("email").notNullable();
-      table.string("password").notNullable();
+      table.string("password");
+      table.string("facebookid");
+      table.string("facebookaccesstoken");
     })
     .then(() => {
       return knex.schema

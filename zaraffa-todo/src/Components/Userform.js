@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, FormGroup, Modal, ModalBody } from "react-bootstrap";
+import FacebookLogin from "react-facebook-login";
+import { loginFacebookThunk } from "../Redux/auth/actions";
 
 function UserForm(props) {
   const [info, setInfo] = useState({
@@ -20,6 +22,16 @@ function UserForm(props) {
     }
   }, [isAuthenticated]);
 
+  const responseFacebook = (userInfo) => {
+    if (userInfo.accessToken) {
+      dispatchEvent(loginFacebookThunk(userInfo.accessToken));
+    }
+    return null;
+  };
+
+  const componentClicked = () => {
+    return null;
+  };
   function handleChange(e) {
     const { name, value } = e.target;
     setInfo((prevValue) => ({
@@ -104,14 +116,19 @@ function UserForm(props) {
                 Go to Login
               </Button>
             ) : (
-              <Button
-                variant="primary"
-                onClick={(e) => {
-                  navigate("/");
-                }}
-              >
-                New User
-              </Button>
+              <>
+                <FacebookLogin
+                
+                />
+                <Button
+                  variant="primary"
+                  onClick={(e) => {
+                    navigate("/");
+                  }}
+                >
+                  New User
+                </Button>
+              </>
             )}
           </Modal.Footer>
         </Form>

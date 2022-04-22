@@ -6,10 +6,18 @@ import { useDispatch } from "react-redux";
 import { TodaySwitch } from "../Redux/todos/actions";
 
 import { Container, Row, Col } from "react-bootstrap";
+import { Prev } from "react-bootstrap/esm/PageItem";
 
 const TodaySwitchComp = () => {
   const [today, setToday] = useState(true);
   const dispatch = useDispatch();
+
+  const flipSwitch = () => {
+    setToday((prev) => !prev);
+    // dispatching the opposite of today, since the checkbox is inversed and when its unchecked its actually set to today
+    // Fix would be to make the checkbox be checked if today is true, currently unchecked is true... causing the confusion.
+    dispatch(TodaySwitch(!today));
+  };
 
   return (
     <>
@@ -22,8 +30,7 @@ const TodaySwitchComp = () => {
                 type="checkbox"
                 checked={!today}
                 onChange={() => {
-                  dispatch(TodaySwitch(today));
-                  setToday(!today);
+                  flipSwitch();
                 }}
               />
               <span className={"todaySlider"} />

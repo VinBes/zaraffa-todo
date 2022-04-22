@@ -18,7 +18,7 @@ export default function Todoreducer(state = initialState, action) {
   switch (action.type) {
     case GET_TODOS:
       return {
-        todos: state.todos.concat(action.payload).sort((a, b) => a.id - b.id),
+        todos: action.payload,
         name: state.name,
         today: state.today,
       };

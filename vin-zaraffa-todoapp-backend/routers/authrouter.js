@@ -12,6 +12,7 @@ class AuthRouter {
     let router = this.express.Router();
 
     router.post("/login", this.login.bind(this));
+    router.post("/login/facebook", this.loginFacebook.bind(this));
     router.post("/signup", this.signup.bind(this));
 
     return router;
@@ -37,6 +38,57 @@ class AuthRouter {
         token: token,
       };
       res.json({ userInfo });
+    } else {
+      res.send("Login Failed");
+    }
+  }
+
+  async loginFacebook(req, res) {
+    console.log(req.body);
+    if (req.body.info) {
+      let accessToken = req.body.info.accessToken;
+      axios
+        .get(`https://graph.facebook.com/me?access_token=${accessToken}`)
+        .then(async (data) => {
+          if (!data.data.error) {
+            let oldUser = await this.knex("users")
+              .select("id")
+              .where("facebookid", req.body.info.id);
+          }
+          if (oldUser.length >= 1) {
+            console.log(`existing user`);
+            let payload = {
+              id: oldUser[0].id,
+            };
+            let token = jwt.sign(payload, config.jwtSecret);
+            let userInfo = {
+              user: oldUser[0],
+              token: token,
+            };
+            res.json({ userInfo });
+          } else {
+            let newUser = {
+              name: req.body.info.name,
+              email: req.body.info.email,
+              facebookaccesstoken: req.body.info.facebookaccesstoken,
+              facebookid: req.body.info.id,
+            };
+            let userInfoDB = await this.knex("users")
+              .insert(newUser)
+              .returning("id");
+            let payload = {
+              id: userInfoDB[0].id,
+            };
+            const token = jwt.sign(payload, config.jwtSecret);
+            let userInfo = {
+              user: userInfoDB[0],
+              token: token,
+            };
+            res.json({ payload });
+          }
+        });
+    } else {
+      res.sendStatus(401);
     }
   }
 

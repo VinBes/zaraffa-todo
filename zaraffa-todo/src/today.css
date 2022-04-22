@@ -43,10 +43,3 @@ input:checked + .todaySlider {
 input:checked + .todaySlider::before {
   transform: translateX(26px);
 }
-
-.todaySlider.rounded {
-  border-radius: 33px;
-}
-.todaySlider.rounded::before {
-  border-radius: 50%;
-}
