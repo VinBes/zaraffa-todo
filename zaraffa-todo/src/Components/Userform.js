@@ -117,9 +117,6 @@ function UserForm(props) {
               </Button>
             ) : (
               <>
-                <FacebookLogin
-                
-                />
                 <Button
                   variant="primary"
                   onClick={(e) => {
